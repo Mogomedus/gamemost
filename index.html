@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Connector — Minecraft × Undertale</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+    /* Поле ввода ника на старте */
+    .nickrow { display: flex; gap: 12px; align-items: center; justify-content: center; margin: 6px 0 2px; }
+    .nickrow label { font-size: 12px; letter-spacing: 2px; color: #ccc; }
+    #nickInput {
+        font-family: inherit; font-size: 16px; letter-spacing: 2px;
+        color: #fff; background: #000; border: 3px solid #fff;
+        padding: 8px 12px; width: 240px; text-align: center; outline: none;
+    }
+    #nickInput:focus { box-shadow: 0 0 14px rgba(255,255,255,0.6); }
+    #nickErr { min-height: 16px; font-size: 11px; color: #ff5555; letter-spacing: 1px; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<div id="app">
+
+    <!-- ================= ЭКРАН 1: Game Connector ================= -->
+    <section id="intro" class="screen active">
+        <div class="scan"></div>
+        <div class="panel">
+            <div class="brand">GAME<span>CONNECTOR</span> v2.077</div>
+            <div class="brandsub">UNIVERSAL MODDER BRIDGE // BUILD 0x1F</div>
+            <h1>Соединить Minecraft<br>с другими игровыми вселенными?</h1>
+            <div class="hint">Обнаружено совместимое ядро: UNDERTALE // MULTIVERSE</div>
+            <div class="nickrow">
+                <label for="nickInput">НИК:</label>
+                <input id="nickInput" type="text" maxlength="24" autocomplete="off" spellcheck="false" placeholder="Steve">
+            </div>
+            <div id="nickErr"></div>
+            <div class="row">
+                <button id="yesBtn" class="btn">[ ДА ]</button>
+                <button id="noBtn" class="btn">[ НЕТ ]</button>
+            </div>
+            <div class="warn">ВНИМАНИЕ: НЕОБРАТИМАЯ ОПЕРАЦИЯ</div>
+        </div>
+    </section>
+
+    <!-- ================= ЭКРАН 2: Боссфайт ================= -->
+    <section id="boss" class="screen">
+        <div id="topbar">
+            <div class="hpline right">
+                <span class="name">ХЕРОБРИН</span>
+                <span class="bar"><i id="bossHpBar"></i></span>
+                <span id="bossHpTxt">500 / 500</span>
+            </div>
+            <div id="turnTxt">ХОД 0</div>
+            <div class="hpline">
+                <span class="name">СТИВ</span>
+                <span class="bar"><i id="playerHpBar"></i></span>
+                <span id="playerHpTxt">20 / 20</span>
+            </div>
+        </div>
+
+        <div class="stage">
+            <!-- Авторские спрайты. Скрыты, рисуются на Canvas
+                 через ctx.drawImage() по фазе боя. Локальная папка ассетов. -->
+            <img id="sprite_resolute" src="photos/Херобрин.png" style="display:none;" alt="">
+            <img id="sprite_mad" src="photos/Херобрин_злость.png" style="display:none;" alt="">
+            <img id="sprite_steve" src="photos/Стив.png" style="display:none;" alt="">
+            <!-- ТУРБО ШИК — отдельный персонаж. Точные имена файлов из photos/ -->
+            <img id="sprite_turbo" src="photos/Турбо.png" style="display:none;" alt="">
+            <img id="sprite_turbo_talk" src="photos/Турбо_говорит.png" style="display:none;" alt="">
+            <img id="sprite_turbo_mad" src="photos/Турбо_зол.png" style="display:none;" alt="">
+            <img id="sprite_turbo_sad" src="photos/Турбо_серьёзное_лицо.png" style="display:none;" alt="" onerror="this.onerror=null;this.src='photos/Турбо_серъёзное_лицо.png';">
+            <canvas id="cv" width="640" height="480"></canvas>
+        </div>
+
+        <div id="textbox"><span id="dialog"></span><span id="cursor">▼</span></div>
+
+        <div id="menu">
+            <button class="btn" data-act="fight">[ АТАКА ]</button>
+            <button class="btn" data-act="act">[ ДЕЙСТВИЕ ]</button>
+            <button class="btn" data-act="item">[ ВЕЩИ ]</button>
+            <button class="btn" data-act="mercy">[ ПОЩАДА ]</button>
+        </div>
+    </section>
+
+    <!-- ================= ЭКРАН 2Б: Инвентарь / RPG-экипировка ================= -->
+    <section id="items" class="screen">
+        <h3>ИНВЕНТАРЬ СТИВА</h3>
+        <div id="itemList"></div>
+        <button id="itemsBack" class="btn">[ ВЕРНУТЬСЯ ]</button>
+    </section>
+
+    <!-- ================= ЭКРАН 3: Финал ================= -->
+    <section id="final" class="screen">
+        <h1 id="finalTitle"></h1>
+        <p id="finalText"></p>
+        <a id="finalLink" href="#" target="_blank" rel="noopener"></a>
+        <button id="restart" class="btn">[ ПЕРЕЗАПУСТИТЬ ]</button>
+        <div class="foot">GAME CONNECTOR // UNIVERSAL MODDER</div>
+    </section>
+
+    <!-- Оверлей смерти -->
+    <div id="gameover">
+        <h2>GAME OVER</h2>
+        <p id="goText">Ты не должен сдаваться...</p>
+        <p id="goMono"></p>
+        <a id="goLink" href="#" target="_blank" rel="noopener"></a>
+        <button id="retry" class="btn">[ ОСТАВАЙСЯ РЕШИТЕЛЬНЫМ ]</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+<script src="engine.js"></script>
+</body>
+</html>

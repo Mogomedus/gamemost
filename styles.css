@@ -1,0 +1,259 @@
+/* ============================================================
+   UI-ВЕРСТАЛЬЩИК: пиксельный ЧЁРНО-БЕЛЫЙ стиль Undertale
+   ============================================================ */
+
+* { box-sizing: border-box; }
+html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: #000; color: #fff;
+    font-family: "Courier New", Consolas, monospace;
+    letter-spacing: 1px;
+    overflow: hidden;
+    -webkit-font-smoothing: none;
+    image-rendering: pixelated;
+}
+
+#app { position: fixed; inset: 0; }
+
+.screen { display: none; position: absolute; inset: 0; }
+.screen.active { display: flex; }
+
+/* ---------- ЭКРАН 1: футуристичный интерфейс софта ---------- */
+#intro {
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background:
+        radial-gradient(circle at 50% 30%, #111 0%, #000 70%),
+        repeating-linear-gradient(0deg, #0a0a0a 0 2px, #000 2px 4px);
+    overflow: hidden;
+}
+
+/* бегущие сканлайны */
+#intro .scan {
+    position: absolute; inset: -50% 0;
+    background: repeating-linear-gradient(0deg,
+        rgba(255,255,255,0.05) 0 1px, transparent 1px 6px);
+    animation: scanmove 6s linear infinite;
+    pointer-events: none;
+}
+@keyframes scanmove { from { transform: translateY(0); } to { transform: translateY(12px); } }
+
+.panel {
+    position: relative;
+    width: min(680px, 92vw);
+    padding: 34px 38px 28px;
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 6px #000, 0 0 26px rgba(255,255,255,0.35);
+    background: rgba(4,4,4,0.92);
+    text-align: center;
+}
+.panel::before {
+    content: ""; position: absolute; inset: 8px;
+    border: 1px dashed #555; pointer-events: none;
+}
+.brand { font-size: 22px; font-weight: bold; letter-spacing: 4px; }
+.brand span { color: #000; background: #fff; padding: 0 4px; }
+.brandsub { font-size: 11px; color: #9a9a9a; margin-top: 6px; letter-spacing: 3px; }
+#intro h1 {
+    font-size: clamp(16px, 2.6vw, 22px);
+    line-height: 1.5; margin: 30px 0 12px;
+    text-shadow: 0 0 10px rgba(255,255,255,0.6);
+}
+.hint { font-size: 12px; color: #aaa; margin-bottom: 26px; }
+.warn { font-size: 11px; color: #ff5555; margin-top: 22px; letter-spacing: 3px; animation: blink 1s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0.15; } }
+
+.row { display: flex; gap: 26px; justify-content: center; align-items: center; }
+
+.btn {
+    font-family: inherit;
+    font-size: 18px;
+    letter-spacing: 3px;
+    color: #fff;
+    background: #000;
+    border: 3px solid #fff;
+    padding: 12px 26px;
+    cursor: pointer;
+    box-shadow: 0 0 12px rgba(255,255,255,0.25);
+    transition: background 0.08s, color 0.08s, transform 0.08s;
+    z-index: 5;
+}
+.btn:hover { background: #fff; color: #000; transform: translateY(-2px); }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: 0.35; cursor: default; }
+/* подсветка кнопки при выборе стрелками/WASD */
+.btn:focus, #finalLink:focus { outline: 3px solid #fff; outline-offset: 3px; }
+
+/* глитч при переходе к бою / в финалах */
+.glitchout { animation: glitchout 1s steps(2) forwards; }
+@keyframes glitchout {
+    0%   { filter: none; transform: translate(0,0); }
+    20%  { filter: invert(1); transform: translate(-6px,3px); }
+    40%  { filter: none; transform: translate(6px,-4px); }
+    60%  { filter: invert(1) contrast(2); transform: translate(-3px,-2px) skewX(6deg); }
+    80%  { filter: none; transform: translate(4px,4px) skewX(-6deg); }
+    100% { filter: brightness(0); transform: translate(0,0); opacity: 0; }
+}
+
+/* ---------- ЭКРАН 2: бой ---------- */
+#boss {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #000;
+}
+
+#topbar {
+    width: 640px; max-width: 96vw;
+    display: flex; flex-direction: column; gap: 5px;
+    font-size: 12px;
+}
+.hpline { display: flex; align-items: center; gap: 10px; }
+.hpline .name { width: 90px; letter-spacing: 2px; }
+.bar {
+    flex: 1; height: 16px; border: 2px solid #fff;
+    position: relative; background: #000;
+}
+.bar i {
+    display: block; height: 100%; width: 100%;
+    background: #fff; transition: width 0.25s ease-out;
+}
+.hpline.right { flex-direction: row-reverse; }
+#turnTxt { text-align: center; color: #bbb; letter-spacing: 3px; }
+
+.stage {
+    position: relative;
+    width: 640px; height: 480px; max-width: 96vw;
+}
+#cv {
+    display: block;
+    width: 100%; height: 100%;
+    border: 3px solid #222;
+    background: #000;
+}
+/* сильный глитч канваса */
+canvas.glitching {
+    animation: cvglitch 0.09s steps(2) infinite;
+}
+@keyframes cvglitch {
+    0%   { transform: translate(0,0); filter: none; }
+    25%  { transform: translate(-4px,2px); filter: invert(1); }
+    50%  { transform: translate(5px,-3px); filter: contrast(3); }
+    75%  { transform: translate(-3px,-2px); filter: invert(0.8); }
+    100% { transform: translate(3px,3px); filter: none; }
+}
+
+#textbox {
+    width: 640px; max-width: 96vw;
+    min-height: 92px;
+    border: 3px solid #fff;
+    background: #000;
+    padding: 16px 18px;
+    font-size: 17px;
+    line-height: 1.5;
+    position: relative;
+}
+#cursor {
+    position: absolute; right: 12px; bottom: 8px;
+    display: none; animation: blink 0.7s steps(2) infinite;
+}
+.shuffle { animation: shuffleBtn 0.4s steps(2) 3; }
+@keyframes shuffleBtn {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(14px) rotate(2deg); }
+    100% { transform: translateX(-14px) rotate(-2deg); }
+}
+.mercyGlow {
+    border-color: #fff !important;
+    box-shadow: 0 0 22px #fff, inset 0 0 12px rgba(255,255,255,0.6) !important;
+    animation: pulseGlow 0.8s ease-in-out infinite alternate;
+}
+@keyframes pulseGlow { from { opacity: 0.75; } to { opacity: 1; } }
+
+/* разбитая медалью кнопка [ПОЩАДА] в фазе ТУРБО */
+.btn.broken {
+    color: #666; border-color: #333; background: #050505;
+    opacity: 0.5; cursor: not-allowed; text-decoration: line-through;
+    box-shadow: none; transform: rotate(-2deg);
+    animation: none;
+}
+.btn.broken:hover { background: #050505; color: #666; transform: rotate(-2deg); }
+
+#menu {
+    width: 640px; max-width: 96vw;
+    display: flex; gap: 12px; justify-content: center;
+}
+#menu .btn { flex: 1; font-size: 15px; padding: 12px 8px; letter-spacing: 2px; }
+
+/* ---------- ЭКРАН 3: финал ---------- */
+#final {
+    flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 20px;
+    background: #000;
+}
+#finalTitle { font-size: clamp(20px, 4vw, 34px); letter-spacing: 6px; margin-bottom: 18px; }
+#finalText { font-size: 15px; color: #cfcfcf; max-width: 620px; line-height: 1.7; margin-bottom: 40px; }
+#finalLink {
+    font-size: clamp(15px, 2.5vw, 22px);
+    letter-spacing: 2px;
+    padding: 16px 24px;
+    border: 3px solid #fff;
+    text-decoration: none;
+    color: #fff;
+    cursor: pointer;
+    word-break: break-all;
+    background: #000;
+}
+#restart { margin-top: 40px; }
+#final .foot { margin-top: 26px; font-size: 11px; color: #777; letter-spacing: 3px; }
+
+#final.final-peace #finalLink { box-shadow: 0 0 26px rgba(255,255,255,0.85); animation: pulseGlow 1.6s ease-in-out infinite alternate; }
+#final.final-genocide #finalLink { animation: linkglitch 0.35s steps(2) infinite; }
+@keyframes linkglitch {
+    0% { transform: translate(0,0); text-shadow: 2px 0 #fff, -2px 0 #888; }
+    25% { transform: translate(-3px,1px) skewX(4deg); text-shadow: -3px 0 #fff, 3px 0 #444; }
+    50% { transform: translate(3px,-2px); text-shadow: 3px 0 #fff, -3px 0 #666; }
+    75% { transform: translate(-2px,-1px) skewX(-4deg); }
+    100% { transform: translate(2px,2px); }
+}
+#final.final-rat { background: #000; }
+#final.final-rat #finalLink { color: #ddd; border-color: #555; opacity: 0.9; animation: creep 3s ease-in-out infinite alternate; }
+@keyframes creep { from { opacity: 0.55; filter: blur(0.2px); } to { opacity: 1; filter: blur(0); } }
+
+#gameover {
+    position: absolute; inset: 0; display: none;
+    align-items: center; justify-content: center; flex-direction: column;
+    background: rgba(0,0,0,0.92); z-index: 50; text-align: center;
+    padding: 20px;
+}
+#gameover.active { display: flex; }
+#gameover h2 { color: #f22; font-size: 40px; letter-spacing: 8px; margin: 0 0 18px; text-shadow: 0 0 18px #f22; }
+#gameover p { color: #ccc; margin-bottom: 18px; max-width: 620px; line-height: 1.6; }
+#goMono { color: #999; font-size: 13px; }
+#goLink {
+    color: #fff; border: 2px solid #fff; padding: 8px 14px;
+    text-decoration: none; letter-spacing: 2px; margin-bottom: 22px;
+}
+#goLink:hover { background: #fff; color: #000; }
+
+/* ---------- ЭКРАН 2Б: инвентарь / RPG-экипировка ---------- */
+#items {
+    flex-direction: column; align-items: center; justify-content: center;
+    gap: 10px; padding: 20px; background: #000; text-align: center;
+}
+#items h3 { margin: 0 0 8px; letter-spacing: 4px; font-size: 18px; }
+#itemList { display: flex; flex-direction: column; gap: 6px; width: min(560px, 92vw); }
+.item-row {
+    font-family: inherit; font-size: 13px; letter-spacing: 1px;
+    color: #fff; background: #000; border: 2px solid #fff;
+    padding: 9px 14px; cursor: pointer; text-align: left;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    box-shadow: none;
+}
+.item-row:hover { background: #fff; color: #000; }
+.item-row small { opacity: 0.7; display: block; font-size: 11px; }
+.item-row .act { letter-spacing: 2px; }
+.item-row.equipped { box-shadow: 0 0 14px rgba(255,255,255,0.8); }
+#itemsBack { margin-top: 6px; }
